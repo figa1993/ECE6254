@@ -1,0 +1,2 @@
+Step 1: open terminal or command prompt
+Step 2: enter the command: conda install -c conda-forge opencv
