@@ -1,7 +1,6 @@
 # Segmentation Module
 # Provides sliding window and image pyramid with gaussian blur
 
-from skimage import data
 from skimage.util import view_as_windows
 from skimage.transform import pyramid_gaussian
 
@@ -41,6 +40,7 @@ def run(input_image, window_height=4, window_width=4, num_pix_slide=1, num_downs
 
 # For testing
 if __name__ == "__main__":
+    from skimage import data
     import time
     t1 = time.time()
     image = data.astronaut()
