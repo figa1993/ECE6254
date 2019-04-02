@@ -33,7 +33,8 @@ def run(input_image, window_height=4, window_width=4, num_pix_slide=1, num_downs
     image_pyramid = pyramid_gaussian(input_image, downscale=2, multichannel=True)
     while num_downscales >= 0:
         downscaled_image = next(image_pyramid)
-        out.append(run_sliding_window(downscaled_image, num_pix_slide, window_height, window_width))
+        list_of_partitioned_images.append(run_sliding_window(downscaled_image, num_pix_slide, window_height,
+                                                             window_width))
         num_downscales -= 1
     return list_of_partitioned_images
 
