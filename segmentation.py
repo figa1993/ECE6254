@@ -3,7 +3,8 @@
 
 from skimage.util import view_as_windows
 from skimage.transform import pyramid_gaussian
-
+import numpy as np
+import cv2
 
 def run_sliding_window(input_image, num_pix_slide, window_height_px, window_width_px):
     """
@@ -14,8 +15,9 @@ def run_sliding_window(input_image, num_pix_slide, window_height_px, window_widt
     :param window_width_px: Number of pixels used in window width (columns in image)
     :return: An array of image partitions
     """
-    window_size = [window_height_px, window_width_px, 3]
-    partitioned_image = view_as_windows(input_image, window_size, num_pix_slide)
+    num_channels = input_image.shape[2]
+    window_size = [window_height_px, window_width_px, num_channels]
+    partitioned_image = np.squeeze(view_as_windows(input_image, window_size, num_pix_slide))
     return partitioned_image
 
 
@@ -30,12 +32,16 @@ def run(input_image, window_height=4, window_width=4, num_pix_slide=1, num_downs
     :return: list of all partitioned images.
     """
     list_of_partitioned_images = []
-    image_pyramid = pyramid_gaussian(input_image, downscale=2, multichannel=True)
-    while num_downscales >= 0:
-        downscaled_image = next(image_pyramid)
-        list_of_partitioned_images.append(run_sliding_window(downscaled_image, num_pix_slide, window_height,
+    if num_downscales > 0:
+        image_pyramid = pyramid_gaussian(input_image, downscale=2, multichannel=True)
+        while num_downscales >= 0:
+            downscaled_image = next(image_pyramid)
+            list_of_partitioned_images.append(run_sliding_window(downscaled_image, num_pix_slide, window_height,
+                                                                 window_width))
+            num_downscales -= 1
+    else:
+        list_of_partitioned_images.append(run_sliding_window(input_image, num_pix_slide, window_height,
                                                              window_width))
-        num_downscales -= 1
     return list_of_partitioned_images
 
 
@@ -43,9 +49,14 @@ def run(input_image, window_height=4, window_width=4, num_pix_slide=1, num_downs
 if __name__ == "__main__":
     from skimage import data
     import time
-    t1 = time.time()
-    image = data.astronaut()
-    out = run(image, 4, 4, 1, 3)
+    im_path = r'C:\Users\Zach Beylo\Downloads\Vehicules1024\00000004_co.png'
 
+    image = cv2.imread(im_path)
+    t1 = time.time()
+    out = run(image, window_height=64, window_width=64, num_pix_slide=8, num_downscales=0)
+    # cv2.imshow('orig', image)
+    # cv2.imshow('image', out[0][0,0])
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
     t2 = time.time()
     print('time = {0}'.format(str(t2-t1)))
