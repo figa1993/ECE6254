@@ -5,6 +5,9 @@ from skimage.util import view_as_windows
 from skimage.transform import pyramid_gaussian
 import numpy as np
 import cv2
+import os
+from skimage import data
+import time
 
 def run_sliding_window(input_image, num_pix_slide, window_height_px, window_width_px):
     """
@@ -21,7 +24,7 @@ def run_sliding_window(input_image, num_pix_slide, window_height_px, window_widt
     return partitioned_image
 
 
-def run(input_image, window_height=4, window_width=4, num_pix_slide=1, num_downscales=3):
+def do_sliding_window_partition(input_image, window_height=4, window_width=4, num_pix_slide=1, num_downscales=3):
     """
     Main function to run segmentation algorithm
     :param input_image: Image to be partitioned
@@ -47,16 +50,15 @@ def run(input_image, window_height=4, window_width=4, num_pix_slide=1, num_downs
 
 # For testing
 if __name__ == "__main__":
-    from skimage import data
-    import time
-    im_path = r'C:\Users\Zach Beylo\Downloads\Vehicules1024\00000004_co.png'
+    im_path =  os.path.abspath(os.path.join(os.path.dirname(os.path.realpath('__file__')),
+                                                                            "../Data/Vehicules1024/00000004_co.png"))
 
     image = cv2.imread(im_path)
     t1 = time.time()
-    out = run(image, window_height=64, window_width=64, num_pix_slide=8, num_downscales=0)
-    # cv2.imshow('orig', image)
-    # cv2.imshow('image', out[0][0,0])
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
+    out = do_sliding_window_partition(image, window_height=64, window_width=64, num_pix_slide=8, num_downscales=0)
+    cv2.imshow('orig', image)
+    cv2.imshow('image', out[0][0,0])
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
     t2 = time.time()
     print('time = {0}'.format(str(t2-t1)))
