@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 
 ######Script Entry Point##########
 if __name__ == '__main__':
+
     ########## Model Training ##########
     ##### Image Loading #####
     ##### Training set generation #####

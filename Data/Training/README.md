@@ -1,0 +1,1 @@
+Directory into which generated training images will be saved.
