@@ -1,0 +1,32 @@
+001	Car
+002	18 wheeler type truck? (notched front end, large rectangular back end)
+003	
+004	Tractor/Combile harvester
+005	Mobile Home or long container
+006	
+007	Motorcycle
+008	RV
+009	Long van (not notched front end, basically whole vehicle is a rectangle)
+010	Generic work equipment, I see cranes, forklifts, etc.
+011	Flat bed truck
+012	
+013	
+014	
+015	
+016	
+017	
+018	
+019	
+020	
+021	
+022	
+023	 Boat
+024	
+025	
+026	
+027	
+028	
+029	
+030	
+031	Plane
+
