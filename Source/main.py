@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import os
-import pandas
+import pandas as pd
 
 from preprocessing_Iteration_1 import preprocess_images
 from parseAnnotations import parse_annotation_csv
@@ -26,6 +26,8 @@ if __name__ == '__main__':
     # Define where training samples will be written
     training_dir = os.path.join(data_folder, "Training")
 
+    training_features = os.path.join(training_dir, "training_features.csv")
+
     ########## Image PreProcessing ##########
     user_input = input('Run Image Preprocessing (y/n)?')
     if(user_input == "y"):
@@ -45,7 +47,12 @@ if __name__ == '__main__':
     window_width = 64
     window_height = 64
 
-    feature_df = generate_training_feature_vectors( training_dir )
+    ########## Feature Extraction ##########
+    user_input = input('Generate Training Samples (y/n)?')
+    if (user_input == "y"):
+        feature_df = generate_training_feature_vectors( training_dir )
+    else:
+        feature_df = pd.read_csv(training_features)
 
 
     # For each image in training set
