@@ -146,7 +146,7 @@ def generate_training_images( dataframe, input_dir, output_dir ):
         image_file = os.path.join(input_dir, ((str(int(inbound_imageID_post_overlap[i])).zfill(8)) +"_ir.png") )
         output_file = os.path.join( output_dir , ((str(int(inbound_imageID_post_overlap[i])).zfill(8)) + "."
                                                   + str(multi_image_counter) + "."+
-                                                  str(int(image_class_post_overlap[i])) + ".png") )
+                                                  str(int(image_class_post_overlap[i])) + ".v.png") )
         print("Processing:",(str(int(inbound_imageID_post_overlap[i])).zfill(8)),".",multi_image_counter)
 
         # Crop image. CROP fct requires top left and bottom right of the image.
