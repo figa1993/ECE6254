@@ -48,7 +48,7 @@ if __name__ == '__main__':
     window_height = 64
 
     ########## Feature Extraction ##########
-    user_input = input('Generate Training Samples (y/n)?')
+    user_input = input('Perform Feature Extraction (y/n)?')
     if (user_input == "y"):
         feature_df = generate_training_feature_vectors( training_dir )
     else:
