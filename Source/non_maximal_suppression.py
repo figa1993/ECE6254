@@ -84,7 +84,7 @@ if __name__ == "__main__":
     test_scores = [0.5, 0.3, 0.4, 0.3]
 
     t1 = time.time()
-    picked_bbox_vertices = non_max_suppression(test_detected_list_of_bbox_verticies, test_scores)
+    picked_bbox_vertices = do_non_max_suppression(test_detected_list_of_bbox_verticies, test_scores)
     t2 = time.time()
     print('time = {0}'.format(str(t2-t1)))
     pass
