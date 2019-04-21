@@ -5,10 +5,10 @@ import numpy as np
 def do_non_max_suppression(bboxes, confidences=None, overlap_thresh=0.5):
     """
 
-    :param bboxes: list of bounding box vertices lists, e.g.: [[x1_1, y1_1, x2_1, y2_1],[x1_2, y1_2, x2_2, y2_2]]
+    :param bboxes: array or list of bounding box vertices lists, e.g.: [[x1_1, y1_1, x2_1, y2_1],[x1_2, y1_2, x2_2, y2_2]]
     :param confidences: list of confidences associated with each bounding box
     :param overlap_thresh: amount of overlap necessary for two bboxes to go through non max suppression
-    :return:
+    :return picked_bboxes: list of picked bounding box vertices lists
     """
     # if there are no bboxes, return an empty list
     if len(bboxes) == 0:
@@ -72,7 +72,8 @@ def do_non_max_suppression(bboxes, confidences=None, overlap_thresh=0.5):
             np.where(overlap > overlap_thresh)[0])))
 
     # return only the bounding bboxes that were picked
-    return bboxes[pick].astype("int")
+    picked_bboxes = bboxes[pick].astype("int").tolist()
+    return picked_bboxes
 
 # For testing
 if __name__ == "__main__":
