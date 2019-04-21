@@ -2,7 +2,7 @@
 import numpy as np
 
 
-def non_max_suppression(bboxes, confidences=None, overlap_thresh=0.5):
+def do_non_max_suppression(bboxes, confidences=None, overlap_thresh=0.5):
     # if there are no bboxes, return an empty list
     if len(bboxes) == 0:
         return []
