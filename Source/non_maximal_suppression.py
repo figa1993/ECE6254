@@ -5,7 +5,7 @@ import numpy as np
 def do_non_max_suppression(bboxes, confidences=None, overlap_thresh=0.5):
     """
 
-    :param bboxes: list of bounding box vertices lists, e.g.: [[x1_1, y1_1, x2_1, y2_1],[x1_2, y1_2, x2_12, y2_2]]
+    :param bboxes: list of bounding box vertices lists, e.g.: [[x1_1, y1_1, x2_1, y2_1],[x1_2, y1_2, x2_2, y2_2]]
     :param confidences: list of confidences associated with each bounding box
     :param overlap_thresh: amount of overlap necessary for two bboxes to go through non max suppression
     :return:
