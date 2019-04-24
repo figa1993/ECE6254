@@ -18,8 +18,8 @@ def contrast_eq(img):
     img = img.astype(np.uint8)
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(4,4))
     img = clahe.apply(img)
-    img = cv2.fastNlMeansDenoising(img, None,h =7,templateWindowSize=21 ,searchWindowSize=7)# remove noise from image 
-
+    img = cv2.fastNlMeansDenoising(img, None,h =30,templateWindowSize=7 ,searchWindowSize=7)# remove noise from image 
+    
     return img
 
 
