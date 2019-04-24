@@ -17,9 +17,10 @@ def contrast_eq(img):
 
     img = img.astype(np.uint8)
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(4,4))
-    cl1 = clahe.apply(img)
-
-    return cl1
+    img = clahe.apply(img)
+    img = cv2.fastNlMeansDenoising(img, None,h =30,templateWindowSize=7 ,searchWindowSize=7)# remove noise from image 
+    
+    return img
 
 
 ####  PART 3: function to write images back in the same folder ##### 
