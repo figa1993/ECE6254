@@ -106,5 +106,6 @@ venv.bak/
 # PyCharm project settings
 .idea/
 
+# Tarballs and Image files
 *.tar*
-*.png*
+*.png
