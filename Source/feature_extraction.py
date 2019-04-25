@@ -8,6 +8,13 @@ import numpy as np
 from skimage.filters import gabor_kernel
 from scipy import ndimage as ndi
 from skimage import feature
+import matplotlib.pyplot as plt
+
+def generate_feature_vector( image, num_cells, num_orientations, frequencies, sigmas  ):
+    hog_feature_vec = generate_HOG_features(image, num_cells, num_orientations)
+    gabor_feature_vec = generate_gabor_features(image, num_orientations, frequencies, sigmas)
+    lbp_feature_vec = generate_lbp_features(image, 24, 8)  # 24 and 8 values taken from the cited example
+    return np.hstack( ( hog_feature_vec, gabor_feature_vec, lbp_feature_vec  ) )
 
 def generate_training_feature_vectors( input_dir ):
     # Get a list of all the training image filepaths for images containing a vehicle
@@ -87,10 +94,23 @@ def generate_training_feature_vectors( input_dir ):
     return df # return the dataframe
 
 
-def generate_HOG_features( image, num_cells, num_orientations ):
+def generate_HOG_features( image, num_cells, num_orientations, visualize=False ):
     pixels_per_block_dim = int(image.shape[0] / num_cells)
-    fd = hog(image, orientations=num_orientations, pixels_per_cell=(pixels_per_block_dim, pixels_per_block_dim),
-                     cells_per_block=(num_cells, num_cells), feature_vector=True)
+    if visualize:
+        fd, hog_image = hog(image, orientations=num_orientations, pixels_per_cell=(pixels_per_block_dim, pixels_per_block_dim),
+                 cells_per_block=(num_cells, num_cells), feature_vector=True,  visualize=True)
+        fig, (ax1, ax2) = plt.subplots(1, 2, sharex=True, sharey=True)
+        ax1.axis('off')
+        ax1.imshow(image, cmap=plt.cm.gray)
+        ax1.set_title('Input image')
+        ax2.axis('off')
+        fig = plt.imshow(hog_image, cmap=plt.cm.gray)
+        ax2.set_title('Histogram of Oriented Gradients')
+        plt.savefig("hog.png")
+        plt.clf()
+    else:
+        fd = hog(image, orientations=num_orientations, pixels_per_cell=(pixels_per_block_dim, pixels_per_block_dim),
+                         cells_per_block=(num_cells, num_cells), feature_vector=True)
 
     return fd #return the vector of HOG features
 
@@ -106,24 +126,37 @@ def generate_HOG_feature_headers( num_cells, num_orientations):
 
     return feature_headers
 
-def generate_gabor_features( image, num_orientations, frequencies, sigmas ):
+def generate_gabor_features( image, num_orientations, frequencies, sigmas, visualize=False ):
     # define number of orientations for which gabor filters are generated (since symmetric only through pi)
     theta_step_size_radians = np.pi / num_orientations
     feature_vec = np.empty(num_orientations*len(frequencies)*len(sigmas)*2) #multiplied by 2 since 2 features per kernel
     iter = 0
-    for i in range(num_orientations):
-        theta = i*theta_step_size_radians
-        for sigma in sigmas:
-            for frequency in frequencies:
+    if visualize:
+        fig, axarr = plt.subplots(len(frequencies), num_orientations, figsize=(10,10))
+    for sigma in sigmas:
+        for i in range(num_orientations):
+            theta = i*theta_step_size_radians
+            for j, frequency in enumerate(frequencies):
                 # Generate the Gabor Kernel
                 kernel = np.real(gabor_kernel(frequency, theta=theta,
                                               sigma_x=sigma, sigma_y=sigma))
                 # convolve image with the kernel
                 filtered_image = ndi.convolve(image, kernel, mode = 'wrap')
+                if visualize:
+                    # plt.subplot(num_orientations*len(frequencies),j+1,i+1)
+                    axarr[j,i].imshow(filtered_image, cmap=plt.cm.gray )
+
                 feature_vec[iter]= filtered_image.mean()
                 iter = iter + 1
                 feature_vec[iter] = filtered_image.var()
                 iter = iter + 1
+        if visualize:
+            # plt.show()
+            plt.savefig(sigma.__str__() + "_gabor.png")
+            plt.clf()
+            fig, axarr = plt.subplots(len(frequencies), num_orientations, figsize=(10, 10))
+
+
     return feature_vec
 
 def generate_gabor_headers(num_orientations, frequencies, sigmas):
@@ -155,3 +188,43 @@ def generate_lbp_headers(num_points, radius):
     for i in range(0, num_points+2):
         lbp_headers.append('num_lbp_pattern_'+i.__str__())
     return lbp_headers
+
+######Script Entry Point##########
+if __name__ == '__main__':
+    ###########  Define Directory/File and paths ##########
+    # Define where input data resides
+    data_folder = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath('__file__')), "../Data"))
+
+    # Define where input images reside
+    input_image_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath('__file__')),
+                                                                                        "../Data/Vehicules1024"+os.sep))
+
+    # Define where images output from pre-processing algorithm will be written
+    preprocessed_images_path = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath('__file__')),
+                                                                                        "../Data/Preprocessed"))
+    # Define filepath to image annotations
+    annotation_filepath = os.path.join(data_folder, "annotation.txt")
+    # Define where training samples will be written
+    training_dir = os.path.join(data_folder, "Training")
+
+    training_features = os.path.join(training_dir, "training_features.csv")
+
+    image_filepath = os.path.join(training_dir, "00000001.0.1.v.png")
+    image = imread(image_filepath)
+
+    # Define tuning parameters for the HOG algorithm
+    num_cells = 8 # number of cells to divide the block (window of overall image) along each direction (assumes square image input)
+    num_orientations = 8 #number of orientations into which to bucket the gradient
+
+    # Define parameters for the Gabor feature generation
+    # Spatial frequencies in pixels for the Gabor filters
+    frequencies = [0.125, 0.25, 0.5, 1, 2, 4, 8] # Guesses
+    # Widths of the Gaussian Kernels in the Gabor Filter
+    sigmas = [1,2,3] # Guesses
+
+    generate_HOG_features( image, num_cells, num_orientations, True )
+    generate_gabor_features(image, num_orientations,frequencies,sigmas, True)
+
+    fv = generate_feature_vector(image, num_cells, num_orientations, frequencies,sigmas)
+
+    print('Complete')
