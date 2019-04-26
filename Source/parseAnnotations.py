@@ -184,7 +184,12 @@ if __name__ == "__main__":
                                                             "../Data"))
     input_image_dir = os.path.join(data_folder, "Vehicules1024")
     training_dir = os.path.join(data_folder, "Training")
+
+    pp_input_image_dir = os.path.join(data_folder, "Preprocessed")
+    pp_training_dir = os.path.join(data_folder, "Training_pre")
+
     annotation_filepath =os.path.join(data_folder,"annotation.txt" )
 
     annotations = parse_annotation_csv( annotation_filepath, ' ' )
     generate_training_images(annotations, input_image_dir, training_dir)
+    generate_training_images(annotations, pp_input_image_dir, pp_training_dir)
