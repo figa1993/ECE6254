@@ -146,7 +146,7 @@ def generate_training_images( dataframe, input_dir, output_dir ):
         image_file = os.path.join(input_dir, ((str(int(inbound_imageID_post_overlap[i])).zfill(8)) +"_ir.png") )
         output_file = os.path.join( output_dir , ((str(int(inbound_imageID_post_overlap[i])).zfill(8)) + "."
                                                   + str(multi_image_counter) + "."+
-                                                  str(int(image_class_post_overlap[i])) + ".v.png") )
+                                                  str(int(image_class_post_overlap[i])) + ".png") )
         print("Processing:",(str(int(inbound_imageID_post_overlap[i])).zfill(8)),".",multi_image_counter)
 
         # Crop image. CROP fct requires top left and bottom right of the image.
@@ -184,7 +184,12 @@ if __name__ == "__main__":
                                                             "../Data"))
     input_image_dir = os.path.join(data_folder, "Vehicules1024")
     training_dir = os.path.join(data_folder, "Training")
+
+    pp_input_image_dir = os.path.join(data_folder, "Preprocessed")
+    pp_training_dir = os.path.join(data_folder, "Training_pre")
+
     annotation_filepath =os.path.join(data_folder,"annotation.txt" )
 
     annotations = parse_annotation_csv( annotation_filepath, ' ' )
     generate_training_images(annotations, input_image_dir, training_dir)
+    generate_training_images(annotations, pp_input_image_dir, pp_training_dir)

@@ -25,12 +25,13 @@ def contrast_eq(img):
 
 ####  PART 3: function to write images back in the same folder ##### 
 def write_image_to_folder(output_dir,filename,image):
-        check = cv2.imwrite(os.path.join(output_dir, filename+'_preprocessed.png'), image)
+        check = cv2.imwrite(os.path.join(output_dir, filename+'.png'), image)
         return
 
 def preprocess_images( input_image_dir, glob_pattern, output_dir  ):
     image_filepaths = get_image_filepaths( input_image_dir, glob_pattern )
     for image_filepath in image_filepaths:
+        print("Processing image: ", image_filepath)
         image = cv2.imread(image_filepath,0)
         pre_processed_image = contrast_eq(image)
         write_image_to_folder( output_dir, os.path.splitext(os.path.basename(image_filepath))[0],
@@ -46,7 +47,7 @@ if __name__ == '__main__':
                                                                                         "../Data/Preprocessed"))
 
     # load images from the specified directory matching the glob pattern
-    images = preprocess_images(input_image_dir, "*.png", preprocessed_images_path)
+    images = preprocess_images(input_image_dir, "*_ir.png", preprocessed_images_path)
 
 
 
